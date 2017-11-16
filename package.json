@@ -1,0 +1,16 @@
+{
+  "name": "typescript-ts",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@types/shelljs": "^0.7.6",
+    "shelljs": "^0.7.8"
+  },
+  "devDependencies": {
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
+  }
+}
