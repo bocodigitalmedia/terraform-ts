@@ -16,32 +16,29 @@ function Terraform(props) {
     };
 }
 exports.Terraform = Terraform;
-function exec(command, _a) {
-    var path = _a.path, cwd = _a.cwd, env = _a.env, stderr = _a.stderr, stdout = _a.stdout;
+function exec(command, tf, parse) {
     var options = Command_1.toArray(command);
-    var childProcess = child_process_1.spawn(path, options, { cwd: cwd, env: env });
-    var out = "";
-    var err = "";
+    var childProcess = child_process_1.spawn(tf.path, options, { cwd: tf.cwd, env: tf.env });
+    var parseStdout = function (stdout) { return parse ? parse(stdout) : stdout; };
+    var stdout = "";
+    var stderr = "";
     var stdoutListener = function (chunk) {
-        if (stdout)
-            stdout.write(chunk);
-        out = out.concat(chunk);
+        if (tf.stdout)
+            tf.stdout.write(chunk);
+        stdout = stdout.concat(chunk);
     };
     var stderrListener = function (chunk) {
-        if (stderr)
-            stderr.write(chunk);
-        err = err.concat(chunk);
+        if (tf.stderr)
+            tf.stderr.write(chunk);
+        stderr = stderr.concat(chunk);
     };
     childProcess.stdout.on("data", stdoutListener);
     childProcess.stderr.on("data", stderrListener);
     return new Promise(function (resolve, reject) {
         childProcess.once("close", function (code, signal) {
-            if (code === 0) {
-                return resolve(out);
-            }
-            else {
-                return reject(err);
-            }
+            childProcess.stdout.removeListener("data", stdoutListener);
+            childProcess.stderr.removeListener("data", stderrListener);
+            code === 0 ? resolve(parseStdout(stdout)) : reject(stderr);
         });
     });
 }

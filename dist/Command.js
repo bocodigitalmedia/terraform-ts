@@ -6,8 +6,7 @@ function optsToArray(opts) {
         return [];
     return Object.keys(opts)
         .map(function (key) { return optToString(key, opts[key]); })
-        .filter(Util_1.isPresentString)
-        .concat(["-no-color"]);
+        .filter(Util_1.isPresentString);
 }
 exports.optsToArray = optsToArray;
 function normalizeKey(key) {
@@ -35,7 +34,10 @@ function argsToArray(args) {
 exports.argsToArray = argsToArray;
 function toArray(_a) {
     var name = _a.name, opts = _a.opts, args = _a.args;
-    return name.split(/\s+/).concat(optsToArray(opts)).concat(argsToArray(args));
+    return name.split(/\s+/)
+        .concat(["-no-color"])
+        .concat(optsToArray(opts))
+        .concat(argsToArray(args));
 }
 exports.toArray = toArray;
 // Workspace
