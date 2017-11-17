@@ -1,6 +1,11 @@
 // See: https://www.terraform.io/docs/commands/
 import { spawn } from 'child_process'
 
+// export const t1 = (a: string): [string] => [a]
+// export const t2 = (a: string, b: string): [string, string] => [a, b]
+export const maybe1or2 = (a: string, b?: string): [string] | [string, string] => b ? [a, b] : [a]
+export const maybe1 = (a?: string): [string] | undefined => a ? [a] : undefined
+
 export type Config = {
     path: string
     cwd: string
@@ -105,11 +110,9 @@ export type Command =
     | WorkspaceShow
 
 
-export type DirOrPlan = string
-
 export type Apply = {
     command: "apply"
-    args?: [DirOrPlan]
+    args?: [string]
     opts?: Partial<{
         backup: string
         lock: boolean
@@ -126,10 +129,9 @@ export type Apply = {
 
 }
 
-export const Apply = (args?: Apply['args'], opts?: Apply['opts']): Apply => ({
-    command: "apply", args, opts
+export const Apply = (dirOrPlan?: string, opts?: Apply['opts']): Apply => ({
+    command: "apply", opts, args: maybe1(dirOrPlan)
 })
-
 
 export type Destroy = {
     command: "destroy"
@@ -149,8 +151,8 @@ export type Destroy = {
     }>
 }
 
-export const Destroy = (args?: Destroy['args'], opts?: Destroy['opts']): Destroy => ({
-    command: "destroy", args, opts
+export const Destroy = (dir?: string, opts?: Destroy['opts']): Destroy => ({
+    command: "destroy", opts, args: maybe1(dir)
 })
 
 export type Fmt = {
@@ -164,8 +166,8 @@ export type Fmt = {
     }>
 }
 
-export const Fmt = (args?: Fmt['args'], opts?: Fmt['opts']): Fmt => ({
-    command: "fmt", args, opts
+export const Fmt = (dir?: string, opts?: Fmt['opts']): Fmt => ({
+    command: "fmt", opts, args: maybe1(dir)
 })
 
 export type ForceUnlock = {
@@ -176,8 +178,8 @@ export type ForceUnlock = {
     }>
 }
 
-export const ForceUnlock = (args: ForceUnlock['args'], opts?: ForceUnlock['opts']): ForceUnlock => ({
-    command: "force-unlock", args, opts
+export const ForceUnlock = (lockId: string, dir?: string, opts?: ForceUnlock['opts']): ForceUnlock => ({
+    command: "force-unlock", opts, args: maybe1or2(lockId, dir)
 })
 
 export type Get = {
@@ -188,8 +190,8 @@ export type Get = {
     }>
 }
 
-export const Get = (args?: Get['args'], opts?: Get['opts']): Get => ({
-    command: "get", args, opts
+export const Get = (dir?: string, opts?: Get['opts']): Get => ({
+    command: "get", opts, args: maybe1(dir)
 })
 
 export type Graph = {
@@ -201,8 +203,8 @@ export type Graph = {
     }>
 }
 
-export const Graph = (args?: Graph['args'], opts?: Graph['opts']): Graph => ({
-    command: "graph", args, opts
+export const Graph = (dir?: string, opts?: Graph['opts']): Graph => ({
+    command: "graph", opts, args: maybe1(dir)
 })
 
 export type Import = {
@@ -221,8 +223,8 @@ export type Import = {
     }>
 }
 
-export const Import = (args: Import['args'], opts?: Import['opts']): Import => ({
-    command: "import", args, opts
+export const Import = (src: string, dest: string, opts?: Import['opts']): Import => ({
+    command: "import", opts, args: [src, dest]
 })
 
 export type Init = {
@@ -235,8 +237,8 @@ export type Init = {
     }>
 }
 
-export const Init = (args?: Init['args'], opts?: Init['opts']): Init => ({
-    command: "init", args, opts
+export const Init = (dir?: string, opts?: Init['opts']): Init => ({
+    command: "init", opts, args: maybe1(dir)
 })
 
 export type Output = {
@@ -249,8 +251,8 @@ export type Output = {
     }>
 }
 
-export const Output = (args?: Output['args'], opts?: Output['opts']): Output => ({
-    command: "output", args, opts
+export const Output = (name?: string, opts?: Output['opts']): Output => ({
+    command: "output", opts, args: maybe1(name)
 })
 
 export type Plan = {
@@ -272,8 +274,8 @@ export type Plan = {
     }>
 }
 
-export const Plan = (args?: Plan['args'], opts?: Plan['opts']): Plan => ({
-    command: "plan", args, opts
+export const Plan = (dirOrPlan?: string, opts?: Plan['opts']): Plan => ({
+    command: "plan", opts, args: maybe1(dirOrPlan)
 })
 
 export type Providers = {
@@ -282,8 +284,8 @@ export type Providers = {
     opts?: never
 }
 
-export const Providers = (args?: Providers['args'], opts?: Providers['opts']): Providers => ({
-    command: "providers", args, opts
+export const Providers = (configPath?: string): Providers => ({
+    command: "providers", args: maybe1(configPath)
 })
 
 export type Push = {
@@ -301,8 +303,8 @@ export type Push = {
     }>
 }
 
-export const Push = (args?: Push['args'], opts?: Push['opts']): Push => ({
-    command: "push", args, opts
+export const Push = (path?: string, opts?: Push['opts']): Push => ({
+    command: "push", opts, args: maybe1(path)
 })
 
 export type Refresh = {
@@ -321,8 +323,8 @@ export type Refresh = {
 }
 
 
-export const Refresh = (args?: Refresh['args'], opts?: Refresh['opts']): Refresh => ({
-    command: "refresh", args, opts
+export const Refresh = (dir?: string, opts?: Refresh['opts']): Refresh => ({
+    command: "refresh", opts, args: maybe1(dir)
 })
 
 export type Show = {
@@ -333,8 +335,8 @@ export type Show = {
     }>
 }
 
-export const Show = (args?: Show['args'], opts?: Show['opts']): Show => ({
-    command: "show", args, opts
+export const Show = (path?: string, opts?: Show['opts']): Show => ({
+    command: "show", opts, args: maybe1(path)
 })
 
 export type StateList = {
@@ -345,8 +347,8 @@ export type StateList = {
     }>
 }
 
-export const StateList = (args?: StateList['args'], opts?: StateList['opts']): StateList => ({
-    command: "state list", args, opts
+export const StateList = (addresses?: string[], opts?: StateList['opts']): StateList => ({
+    command: "state list", opts, args: addresses
 })
 
 export type StateMv = {
@@ -360,8 +362,8 @@ export type StateMv = {
     }>
 }
 
-export const StateMv = (args: StateMv['args'], opts?: StateMv['opts']): StateMv => ({
-    command: "state mv", args, opts
+export const StateMv = (src: string, dest: string, opts?: StateMv['opts']): StateMv => ({
+    command: "state mv", opts, args: [src, dest]
 })
 
 export type StatePull = {
@@ -370,8 +372,8 @@ export type StatePull = {
     opts?: never
 }
 
-export const StatePull = (args?: StatePull['args'], opts?: StatePull['opts']): StatePull => ({
-    command: "state pull", args, opts
+export const StatePull = (): StatePull => ({
+    command: "state pull"
 })
 
 export type StatePush = {
@@ -382,8 +384,8 @@ export type StatePush = {
     }>
 }
 
-export const StatePush = (args: StatePush['args'], opts?: StatePush['opts']): StatePush => ({
-    command: "state push", args, opts
+export const StatePush = (path: string, opts?: StatePush['opts']): StatePush => ({
+    command: "state push", opts, args: [path]
 })
 
 export type StateRm = {
@@ -395,8 +397,8 @@ export type StateRm = {
     }>
 }
 
-export const StateRm = (args: StateRm['args'], opts?: StateRm['opts']): StateRm => ({
-    command: "state rm", args, opts
+export const StateRm = (addresses: string[], opts?: StateRm['opts']): StateRm => ({
+    command: "state rm", opts, args: addresses
 })
 
 export type StateShow = {
@@ -407,8 +409,8 @@ export type StateShow = {
     }>
 }
 
-export const StateShow = (args: StateShow['args'], opts?: StateShow['opts']): StateShow => ({
-    command: "state show", args, opts
+export const StateShow = (address: string, opts?: StateShow['opts']): StateShow => ({
+    command: "state show", opts, args: [address]
 })
 
 export type Taint = {
@@ -425,8 +427,8 @@ export type Taint = {
     }>
 }
 
-export const Taint = (args: Taint['args'], opts?: Taint['opts']): Taint => ({
-    command: "taint", args, opts
+export const Taint = (name: string, opts?: Taint['opts']): Taint => ({
+    command: "taint", opts, args: [name]
 })
 
 export type Validate = {
@@ -439,8 +441,8 @@ export type Validate = {
     }>
 }
 
-export const Validate = (args?: Validate['args'], opts?: Validate['opts']): Validate => ({
-    command: "validate", args, opts
+export const Validate = (dir?: string, opts?: Validate['opts']): Validate => ({
+    command: "validate", opts, args: maybe1(dir)
 })
 
 export type Untaint = {
@@ -458,8 +460,8 @@ export type Untaint = {
     }>
 }
 
-export const Untaint = (args: Untaint['args'], opts?: Untaint['opts']): Untaint => ({
-    command: "untaint", args, opts
+export const Untaint = (name: string, opts?: Untaint['opts']): Untaint => ({
+    command: "untaint", opts, args: [name]
 })
 
 export type WorkspaceList = {
@@ -468,8 +470,8 @@ export type WorkspaceList = {
     opts?: never
 }
 
-export const WorkspaceList = (args?: WorkspaceList['args'], opts?: WorkspaceList['opts']): WorkspaceList => ({
-    command: "workspace list", args, opts
+export const WorkspaceList = (): WorkspaceList => ({
+    command: "workspace list"
 })
 
 export type WorkspaceSelect = {
@@ -478,8 +480,8 @@ export type WorkspaceSelect = {
     opts?: never
 }
 
-export const WorkspaceSelect = (args: WorkspaceSelect['args'], opts?: WorkspaceSelect['opts']): WorkspaceSelect => ({
-    command: "workspace select", args, opts
+export const WorkspaceSelect = (name: string): WorkspaceSelect => ({
+    command: "workspace select", args: [name]
 })
 
 export type WorkspaceNew = {
@@ -490,8 +492,8 @@ export type WorkspaceNew = {
     }>
 }
 
-export const WorkspaceNew = (args: WorkspaceNew['args'], opts?: WorkspaceNew['opts']): WorkspaceNew => ({
-    command: "workspace new", args, opts
+export const WorkspaceNew = (name: string, opts?: WorkspaceNew['opts']): WorkspaceNew => ({
+    command: "workspace new", opts, args: [name]
 })
 
 export type WorkspaceDelete = {
@@ -502,8 +504,8 @@ export type WorkspaceDelete = {
     }>
 }
 
-export const WorkspaceDelete = (args: WorkspaceDelete['args'], opts?: WorkspaceDelete['opts']): WorkspaceDelete => ({
-    command: "workspace delete", args, opts
+export const WorkspaceDelete = (name: string, opts?: WorkspaceDelete['opts']): WorkspaceDelete => ({
+    command: "workspace delete", opts, args: [name]
 })
 
 export type WorkspaceShow = {
@@ -512,8 +514,8 @@ export type WorkspaceShow = {
     opts?: never
 }
 
-export const WorkspaceShow = (args?: WorkspaceShow['args'], opts?: WorkspaceShow['opts']): WorkspaceShow => ({
-    command: "workspace show", args, opts
+export const WorkspaceShow = (): WorkspaceShow => ({
+    command: "workspace show"
 })
 
 // const e: Executor = {

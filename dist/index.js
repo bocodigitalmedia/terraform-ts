@@ -2,6 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // See: https://www.terraform.io/docs/commands/
 var child_process_1 = require("child_process");
+// export const t1 = (a: string): [string] => [a]
+// export const t2 = (a: string, b: string): [string, string] => [a, b]
+exports.maybe1or2 = function (a, b) { return b ? [a, b] : [a]; };
+exports.maybe1 = function (a) { return a ? [a] : undefined; };
+exports.bind = function (cfg) { return function (cmd) { return exports.exec(cmd, cfg); }; };
 exports.exec = function (cmd, _a) {
     var path = _a.path, cwd = _a.cwd;
     var args = exports.commandToArray(cmd);
@@ -60,96 +65,99 @@ exports.optsToArray = function (opts) {
         }
     }, []);
 };
-exports.Apply = function (args, opts) { return ({
-    command: "apply", args: args, opts: opts
+exports.Apply = function (dirOrPlan, opts) { return ({
+    command: "apply", opts: opts, args: exports.maybe1(dirOrPlan)
 }); };
-exports.Destroy = function (args, opts) { return ({
-    command: "destroy", args: args, opts: opts
+exports.Destroy = function (dir, opts) { return ({
+    command: "destroy", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.Fmt = function (args, opts) { return ({
-    command: "fmt", args: args, opts: opts
+exports.Fmt = function (dir, opts) { return ({
+    command: "fmt", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.ForceUnlock = function (args, opts) { return ({
-    command: "force-unlock", args: args, opts: opts
+exports.ForceUnlock = function (lockId, dir, opts) { return ({
+    command: "force-unlock", opts: opts, args: exports.maybe1or2(lockId, dir)
 }); };
-exports.Get = function (args, opts) { return ({
-    command: "get", args: args, opts: opts
+exports.Get = function (dir, opts) { return ({
+    command: "get", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.Graph = function (args, opts) { return ({
-    command: "graph", args: args, opts: opts
+exports.Graph = function (dir, opts) { return ({
+    command: "graph", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.Import = function (args, opts) { return ({
-    command: "import", args: args, opts: opts
+exports.Import = function (src, dest, opts) { return ({
+    command: "import", opts: opts, args: [src, dest]
 }); };
-exports.Init = function (args, opts) { return ({
-    command: "init", args: args, opts: opts
+exports.Init = function (dir, opts) { return ({
+    command: "init", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.Output = function (args, opts) { return ({
-    command: "output", args: args, opts: opts
+exports.Output = function (name, opts) { return ({
+    command: "output", opts: opts, args: exports.maybe1(name)
 }); };
-exports.Plan = function (args, opts) { return ({
-    command: "plan", args: args, opts: opts
+exports.Plan = function (dirOrPlan, opts) { return ({
+    command: "plan", opts: opts, args: exports.maybe1(dirOrPlan)
 }); };
-exports.Providers = function (args, opts) { return ({
-    command: "providers", args: args, opts: opts
+exports.Providers = function (configPath) { return ({
+    command: "providers", args: exports.maybe1(configPath)
 }); };
-exports.Push = function (args, opts) { return ({
-    command: "push", args: args, opts: opts
+exports.Push = function (path, opts) { return ({
+    command: "push", opts: opts, args: exports.maybe1(path)
 }); };
-exports.Refresh = function (args, opts) { return ({
-    command: "refresh", args: args, opts: opts
+exports.Refresh = function (dir, opts) { return ({
+    command: "refresh", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.Show = function (args, opts) { return ({
-    command: "show", args: args, opts: opts
+exports.Show = function (path, opts) { return ({
+    command: "show", opts: opts, args: exports.maybe1(path)
 }); };
-exports.StateList = function (args, opts) { return ({
-    command: "state list", args: args, opts: opts
+exports.StateList = function (addresses, opts) { return ({
+    command: "state list", opts: opts, args: addresses
 }); };
-exports.StateMv = function (args, opts) { return ({
-    command: "state mv", args: args, opts: opts
+exports.StateMv = function (src, dest, opts) { return ({
+    command: "state mv", opts: opts, args: [src, dest]
 }); };
-exports.StatePull = function (args, opts) { return ({
-    command: "state pull", args: args, opts: opts
+exports.StatePull = function () { return ({
+    command: "state pull"
 }); };
-exports.StatePush = function (args, opts) { return ({
-    command: "state push", args: args, opts: opts
+exports.StatePush = function (path, opts) { return ({
+    command: "state push", opts: opts, args: [path]
 }); };
-exports.StateRm = function (args, opts) { return ({
-    command: "state rm", args: args, opts: opts
+exports.StateRm = function (addresses, opts) { return ({
+    command: "state rm", opts: opts, args: addresses
 }); };
-exports.StateShow = function (args, opts) { return ({
-    command: "state show", args: args, opts: opts
+exports.StateShow = function (address, opts) { return ({
+    command: "state show", opts: opts, args: [address]
 }); };
-exports.Taint = function (args, opts) { return ({
-    command: "taint", args: args, opts: opts
+exports.Taint = function (name, opts) { return ({
+    command: "taint", opts: opts, args: [name]
 }); };
-exports.Validate = function (args, opts) { return ({
-    command: "validate", args: args, opts: opts
+exports.Validate = function (dir, opts) { return ({
+    command: "validate", opts: opts, args: exports.maybe1(dir)
 }); };
-exports.Untaint = function (args, opts) { return ({
-    command: "untaint", args: args, opts: opts
+exports.Untaint = function (name, opts) { return ({
+    command: "untaint", opts: opts, args: [name]
 }); };
-exports.WorkspaceList = function (args, opts) { return ({
-    command: "workspace list", args: args, opts: opts
+exports.WorkspaceList = function () { return ({
+    command: "workspace list"
 }); };
-exports.WorkspaceSelect = function (args, opts) { return ({
-    command: "workspace select", args: args, opts: opts
+exports.WorkspaceSelect = function (name) { return ({
+    command: "workspace select", args: [name]
 }); };
-exports.WorkspaceNew = function (args, opts) { return ({
-    command: "workspace new", args: args, opts: opts
+exports.WorkspaceNew = function (name, opts) { return ({
+    command: "workspace new", opts: opts, args: [name]
 }); };
-exports.WorkspaceDelete = function (args, opts) { return ({
-    command: "workspace delete", args: args, opts: opts
+exports.WorkspaceDelete = function (name, opts) { return ({
+    command: "workspace delete", opts: opts, args: [name]
 }); };
-exports.WorkspaceShow = function (args, opts) { return ({
-    command: "workspace show", args: args, opts: opts
+exports.WorkspaceShow = function () { return ({
+    command: "workspace show"
 }); };
-var tf = {
-    path: "terraform",
-    cwd: "/Users/christianbradley/src/delphire-terraform/modules/environment/api"
-};
-Promise.resolve()
-    .then(function () { return exports.exec(exports.WorkspaceSelect(["inventiv.staging"]), tf); })
-    .then(function () { return exports.exec(exports.StatePull(), tf); })
-    .then(console.log)
-    .catch(console.error);
+// const e: Executor = {
+//     path: "terraform",
+//     cwd: "/Users/christianbradley/src/delphire-terraform/modules/environment/api"
+// }
+// const x = bind(e)
+// Promise.resolve()
+//     .then(() => x(WorkspaceSelect(["inventiv.staging"])))
+//     .then(() => x(StatePull()))
+//     .then(console.log)
+//     // .then(() => exec(WorkspaceShow(), tf))
+//     // .then(console.log)
+//     .catch(console.error)
