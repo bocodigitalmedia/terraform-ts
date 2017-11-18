@@ -1,19 +1,58 @@
 // See: https://www.terraform.io/docs/commands/
 import { spawn } from 'child_process'
 
-// export const t1 = (a: string): [string] => [a]
-// export const t2 = (a: string, b: string): [string, string] => [a, b]
-export const maybe1or2 = (a: string, b?: string): [string] | [string, string] => b ? [a, b] : [a]
-export const maybe1 = (a?: string): [string] | undefined => a ? [a] : undefined
+// Non-exported utility functions
+
+const maybe1or2 = (a: string, b?: string): [string] | [string, string] => b ? [a, b] : [a]
+
+const maybe1 = (a?: string): [string] | undefined => a ? [a] : undefined
+
+const commandToArray = ({ command, args, opts }: Command): string[] => {
+    const commandArr = command.split(' ')
+    const argsArr = args ? args : []
+    const optsArr = optsToArray(opts)
+
+    return commandArr.concat(optsArr, argsArr)
+}
+
+const optsToArray = (opts: any): string[] => {
+    if (typeof opts !== 'object') return []
+    const keys = Object.keys(opts)
+
+    return keys.reduce<string[]>((memo, key) => {
+        const val = opts[key]
+        const flag = "-" + key.replace(/[A-Z]/, "-$1").toLowerCase()
+        const pair = (val: any) => `${flag}=${val.toString()}`
+
+        if (val == null) {
+            return memo.concat(flag)
+        }
+        if (Array.isArray(val)) {
+            const pairs = val.map(pair)
+            return memo.concat(pairs)
+        }
+        else {
+            return memo.concat(pair(val))
+        }
+    }, [])
+}
+
+// Main
 
 export type Config = {
     path: string
     cwd: string
 }
 
+export const Config = (props: Partial<Config> = {}): Config => ({
+    path: props.path || "terraform",
+    cwd: props.cwd || process.cwd()
+})
+
 export const bind = (cfg: Config) => (cmd: Command): Promise<string> => exec(cmd, cfg)
 
-export const exec = (cmd: Command, { path, cwd }: Config): Promise<string> => {
+export const exec = (cmd: Command, cfg: Partial<Config> = {}): Promise<string> => {
+    const { path, cwd } = Config(cfg)
     const args = commandToArray(cmd)
     const cp = spawn(path, args, { cwd })
 
@@ -49,35 +88,7 @@ export const exec = (cmd: Command, { path, cwd }: Config): Promise<string> => {
     })
 }
 
-export const commandToArray = ({ command, args, opts }: Command): string[] => {
-    const commandArr = command.split(' ')
-    const argsArr = args ? args : []
-    const optsArr = optsToArray(opts)
-
-    return commandArr.concat(optsArr, argsArr)
-}
-
-export const optsToArray = (opts: any): string[] => {
-    if (typeof opts !== 'object') return []
-    const keys = Object.keys(opts)
-
-    return keys.reduce<string[]>((memo, key) => {
-        const val = opts[key]
-        const flag = "-" + key.replace(/[A-Z]/, "-$1").toLowerCase()
-        const pair = (val: any) => `${flag}=${val.toString()}`
-
-        if (val == null) {
-            return memo.concat(flag)
-        }
-        if (Array.isArray(val)) {
-            const pairs = val.map(pair)
-            return memo.concat(pairs)
-        }
-        else {
-            return memo.concat(pair(val))
-        }
-    }, [])
-}
+// Commands
 
 export type Command =
     | Apply
@@ -518,17 +529,45 @@ export const WorkspaceShow = (): WorkspaceShow => ({
     command: "workspace show"
 })
 
-// const e: Executor = {
-//     path: "terraform",
-//     cwd: "/Users/christianbradley/src/delphire-terraform/modules/environment/api"
-// }
+export const Terraform = (cfg: Partial<Config> = {}) => {
+    const exec = bind(Config(cfg))
 
-// const x = bind(e)
+    return {
+        apply: (dirOrPlan?: string, opts?: Apply['opts']) => exec(Apply(dirOrPlan, opts)),
+        destroy: (dir?: string, opts?: Destroy['opts']) => exec(Destroy(dir, opts)),
+        fmt: (dir?: string, opts?: Fmt['opts']) => exec(Fmt(dir, opts)),
+        forceUnlock: (lockId: string, dir?: string, opts?: ForceUnlock['opts']) => exec(ForceUnlock(lockId, dir, opts)),
+        get: (dir?: string, opts?: Get['opts']) => exec(Get(dir, opts)),
+        graph: (dir?: string, opts?: Graph['opts']) => exec(Graph(dir, opts)),
+        import: (src: string, dest: string, opts?: Import['opts']) => exec(Import(src, dest, opts)),
+        init: (dir?: string, opts?: Init['opts']) => exec(Init(dir, opts)),
+        output: (name?: string, opts?: Output['opts']) => exec(Output(name, opts)),
+        plan: (dirOrPlan?: string, opts?: Plan['opts']) => exec(Plan(dirOrPlan, opts)),
+        providers: (configPath?: string) => exec(Providers(configPath)),
+        push: (path?: string, opts?: Push['opts']) => exec(Push(path, opts)),
+        refresh: (dir?: string, opts?: Refresh['opts']) => exec(Refresh(dir, opts)),
+        show: (path?: string, opts?: Show['opts']) => exec(Show(path, opts)),
+        state: {
+            list: (addresses?: string[], opts?: StateList['opts']) => exec(StateList(addresses, opts)),
+            mv: (src: string, dest: string, opts?: StateMv['opts']) => exec(StateMv(src, dest, opts)),
+            pull: () => exec(StatePull()),
+            push: (path: string, opts?: StatePush['opts']) => exec(StatePush(path, opts)),
+            rm: (addresses: string[], opts?: StateRm['opts']) => exec(StateRm(addresses, opts)),
+            show: (address: string, opts?: StateShow['opts']) => exec(StateShow(address, opts))
+        },
+        taint: (name: string, opts?: Taint['opts']) => exec(Taint(name, opts)),
+        validate: (dir?: string, opts?: Validate['opts']) => exec(Validate(dir, opts)),
+        untaint: (name: string, opts?: Untaint['opts']) => exec(Untaint(name, opts)),
+        workspace: {
+            list: () => exec(WorkspaceList()),
+            select: (name: string) => exec(WorkspaceSelect(name)),
+            new: (name: string, opts?: WorkspaceNew['opts']) => exec(WorkspaceNew(name, opts)),
+            delete: (name: string, opts?: WorkspaceDelete['opts']) => exec(WorkspaceDelete(name, opts)),
+            show: () => exec(WorkspaceShow())
+        }
+    }
+}
 
-// Promise.resolve()
-//     .then(() => x(WorkspaceSelect(["inventiv.staging"])))
-//     .then(() => x(StatePull()))
-//     .then(console.log)
-//     // .then(() => exec(WorkspaceShow(), tf))
-//     // .then(console.log)
-//     .catch(console.error)
+// Example:
+// const tf = Terraform({ cwd: '/Users/christianbradley/src/delphire-terraform/modules/environment/api' })
+// tf.workspace.list().then(console.log).catch(console.error)
