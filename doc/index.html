@@ -70,7 +70,8 @@
 				<h2 id="installation">Installation</h2>
 				<pre><code>npm <span class="hljs-keyword">install</span> terraform-js
 </code></pre><h2 id="usage">Usage</h2>
-				<p>See the <a href="doc/index.html">API Docs</a> for all method signatures.</p>
+				<p>See the <code>doc</code> directory for full API Documentation.</p>
+				<h3 id="using-the-terraform-class">Using the Terraform Class</h3>
 				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> { Terraform, Parse } <span class="hljs-keyword">from</span> <span class="hljs-string">'terraform-js'</span>
 
 <span class="hljs-keyword">const</span> tf = <span class="hljs-keyword">new</span> Terraform({
@@ -78,11 +79,33 @@
     cwd: <span class="hljs-string">"/path/to/project"</span>
 })
 
-tf.workspaceList().then(<span class="hljs-built_in">console</span>.log).catch(<span class="hljs-built_in">console</span>.error)
+tf.workspaceList().then(<span class="hljs-built_in">console</span>.log)
 
 <span class="hljs-comment">//   workspace1</span>
 <span class="hljs-comment">// * workspace2</span>
 <span class="hljs-comment">//   workspace3</span>
+</code></pre>
+				<h3 id="functional-style">Functional Style</h3>
+				<pre><code class="lang-ts"><span class="hljs-keyword">import</span> { exec, map, Config, WorkspaceList, WorkspaceSelect, WorkspaceNew } <span class="hljs-keyword">from</span> <span class="hljs-string">'terraform-js'</span>
+
+<span class="hljs-keyword">const</span> cfg = Config({ cwd: <span class="hljs-string">"/path/to/project"</span> })
+
+<span class="hljs-comment">// execute a single command</span>
+exec(WorkspaceNew(<span class="hljs-string">"test-2"</span>), cfg).then((<span class="hljs-built_in">console</span>.log))
+
+<span class="hljs-comment">//&gt; * default</span>
+
+
+<span class="hljs-comment">// execute multiple commands</span>
+<span class="hljs-keyword">const</span> commands = [
+    WorkspaceNew(<span class="hljs-string">"test-1"</span>),
+    WorkspaceSelect(<span class="hljs-string">"default"</span>)
+    WorkspaceList()
+]
+
+mapExec(commands, cfg).then(<span class="hljs-function"><span class="hljs-params">results</span> =&gt;</span> results.forEach(<span class="hljs-built_in">console</span>.log))
+
+<span class="hljs-comment">// logs output of each command</span>
 </code></pre>
 			</div>
 		</div>

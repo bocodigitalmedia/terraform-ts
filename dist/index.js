@@ -12,24 +12,16 @@ exports.Config = function (props) {
         path: props.path || "terraform",
     });
 };
-/**
- * Returns an `exec` method bound to the configuration provided
- */
-exports.bindConfig = function (cfg) {
-    return function (cmd) {
-        return exec(cmd, cfg);
-    };
-};
-function map(commands, cfg) {
+function mapExec(commands, cfg) {
     if (cfg === undefined) {
-        return function (cfg) { return map(commands, cfg); };
+        return function (cfg) { return mapExec(commands, cfg); };
     }
     var reduceFn = function (promise, cmd) {
         return promise.then(function (results) { return exec(cmd, cfg).then(function (result) { return results.concat(result); }); });
     };
     return commands.reduce(reduceFn, Promise.resolve([]));
 }
-exports.map = map;
+exports.mapExec = mapExec;
 function exec(cmd, cfg) {
     if (cfg === undefined) {
         return function (cfg) { return exec(cmd, cfg); };
@@ -165,146 +157,90 @@ var Terraform = /** @class */ (function () {
     return Terraform;
 }());
 exports.Terraform = Terraform;
-exports.Apply = function (dirOrPlan, opts) {
-    return ({
-        command: "apply", opts: opts, args: maybe1(dirOrPlan),
-    });
-};
-exports.Destroy = function (dir, opts) {
-    return ({
-        command: "destroy", opts: opts, args: maybe1(dir),
-    });
-};
-exports.Fmt = function (dir, opts) {
-    return ({
-        command: "fmt", opts: opts, args: maybe1(dir),
-    });
-};
-exports.ForceUnlock = function (lockId, dir, opts) {
-    return ({
-        command: "force-unlock", opts: opts, args: maybe1or2(lockId, dir),
-    });
-};
-exports.Get = function (dir, opts) {
-    return ({
-        command: "get", opts: opts, args: maybe1(dir),
-    });
-};
-exports.Graph = function (dir, opts) {
-    return ({
-        command: "graph", opts: opts, args: maybe1(dir),
-    });
-};
-exports.Import = function (src, dest, opts) {
-    return ({
-        command: "import", opts: opts, args: [src, dest],
-    });
-};
-exports.Init = function (dir, opts) {
-    return ({
-        command: "init", opts: opts, args: maybe1(dir),
-    });
-};
-exports.Output = function (name, opts) {
-    return ({
-        command: "output", opts: opts, args: maybe1(name),
-    });
-};
-exports.Plan = function (dirOrPlan, opts) {
-    return ({
-        command: "plan", opts: opts, args: maybe1(dirOrPlan),
-    });
-};
-exports.Providers = function (configPath) {
-    return ({
-        command: "providers", args: maybe1(configPath),
-    });
-};
-exports.Push = function (path, opts) {
-    return ({
-        command: "push", opts: opts, args: maybe1(path),
-    });
-};
-exports.Refresh = function (dir, opts) {
-    return ({
-        command: "refresh", opts: opts, args: maybe1(dir),
-    });
-};
-exports.Show = function (path, opts) {
-    return ({
-        command: "show", opts: opts, args: maybe1(path),
-    });
-};
-exports.StateList = function (addresses, opts) {
-    return ({
-        command: "state list", opts: opts, args: addresses,
-    });
-};
-exports.StateMv = function (src, dest, opts) {
-    return ({
-        command: "state mv", opts: opts, args: [src, dest],
-    });
-};
-exports.StatePull = function () {
-    return ({
-        command: "state pull",
-    });
-};
-exports.StatePush = function (path, opts) {
-    return ({
-        command: "state push", opts: opts, args: [path],
-    });
-};
-exports.StateRm = function (addresses, opts) {
-    return ({
-        command: "state rm", opts: opts, args: addresses,
-    });
-};
-exports.StateShow = function (address, opts) {
-    return ({
-        command: "state show", opts: opts, args: [address],
-    });
-};
-exports.Taint = function (name, opts) {
-    return ({
-        command: "taint", opts: opts, args: [name],
-    });
-};
-exports.Validate = function (dir, opts) {
-    return ({
-        command: "validate", opts: opts, args: maybe1(dir),
-    });
-};
-exports.Untaint = function (name, opts) {
-    return ({
-        command: "untaint", opts: opts, args: [name],
-    });
-};
-exports.WorkspaceList = function () {
-    return ({
-        command: "workspace list",
-    });
-};
-exports.WorkspaceSelect = function (name) {
-    return ({
-        command: "workspace select", args: [name],
-    });
-};
-exports.WorkspaceNew = function (name, opts) {
-    return ({
-        command: "workspace new", opts: opts, args: [name],
-    });
-};
-exports.WorkspaceDelete = function (name, opts) {
-    return ({
-        command: "workspace delete", opts: opts, args: [name],
-    });
-};
-exports.WorkspaceShow = function () {
-    return ({
-        command: "workspace show",
-    });
-};
+exports.Apply = function (dirOrPlan, opts) { return ({
+    command: "apply", opts: opts, args: maybe1(dirOrPlan),
+}); };
+exports.Destroy = function (dir, opts) { return ({
+    command: "destroy", opts: opts, args: maybe1(dir),
+}); };
+exports.Fmt = function (dir, opts) { return ({
+    command: "fmt", opts: opts, args: maybe1(dir),
+}); };
+exports.ForceUnlock = function (lockId, dir, opts) { return ({
+    command: "force-unlock", opts: opts, args: maybe1or2(lockId, dir),
+}); };
+exports.Get = function (dir, opts) { return ({
+    command: "get", opts: opts, args: maybe1(dir),
+}); };
+exports.Graph = function (dir, opts) { return ({
+    command: "graph", opts: opts, args: maybe1(dir),
+}); };
+exports.Import = function (src, dest, opts) { return ({
+    command: "import", opts: opts, args: [src, dest],
+}); };
+exports.Init = function (dir, opts) { return ({
+    command: "init", opts: opts, args: maybe1(dir),
+}); };
+exports.Output = function (name, opts) { return ({
+    command: "output", opts: opts, args: maybe1(name),
+}); };
+exports.Plan = function (dirOrPlan, opts) { return ({
+    command: "plan", opts: opts, args: maybe1(dirOrPlan),
+}); };
+exports.Providers = function (configPath) { return ({
+    command: "providers", args: maybe1(configPath),
+}); };
+exports.Push = function (path, opts) { return ({
+    command: "push", opts: opts, args: maybe1(path),
+}); };
+exports.Refresh = function (dir, opts) { return ({
+    command: "refresh", opts: opts, args: maybe1(dir),
+}); };
+exports.Show = function (path, opts) { return ({
+    command: "show", opts: opts, args: maybe1(path),
+}); };
+exports.StateList = function (addresses, opts) { return ({
+    command: "state list", opts: opts, args: addresses,
+}); };
+exports.StateMv = function (src, dest, opts) { return ({
+    command: "state mv", opts: opts, args: [src, dest],
+}); };
+exports.StatePull = function () { return ({
+    command: "state pull",
+}); };
+exports.StatePush = function (path, opts) { return ({
+    command: "state push", opts: opts, args: [path],
+}); };
+exports.StateRm = function (addresses, opts) { return ({
+    command: "state rm", opts: opts, args: addresses,
+}); };
+exports.StateShow = function (address, opts) { return ({
+    command: "state show", opts: opts, args: [address],
+}); };
+exports.Taint = function (name, opts) { return ({
+    command: "taint", opts: opts, args: [name],
+}); };
+exports.Validate = function (dir, opts) { return ({
+    command: "validate", opts: opts, args: maybe1(dir),
+}); };
+exports.Untaint = function (name, opts) { return ({
+    command: "untaint", opts: opts, args: [name],
+}); };
+exports.WorkspaceList = function () { return ({
+    command: "workspace list",
+}); };
+exports.WorkspaceSelect = function (name) { return ({
+    command: "workspace select", args: [name],
+}); };
+exports.WorkspaceNew = function (name, opts) { return ({
+    command: "workspace new", opts: opts, args: [name],
+}); };
+exports.WorkspaceDelete = function (name, opts) { return ({
+    command: "workspace delete", opts: opts, args: [name],
+}); };
+exports.WorkspaceShow = function () { return ({
+    command: "workspace show",
+}); };
 var toArray = function (_a) {
     var command = _a.command, args = _a.args, opts = _a.opts;
     var commandArr = command.split(" ");
@@ -324,13 +260,11 @@ var optsToArray = function (opts) {
         return memo.concat(next);
     }, []);
 };
-var flag = function (key) {
-    return function (val) {
-        var k = flagKey(key);
-        return val === null ? k : k + "=" + val;
-    };
-};
+var flag = function (key) { return function (val) {
+    var k = flagKey(key);
+    return val === null ? k : k + "=" + val;
+}; };
 var dasherize = function (str) { return str.replace(/[A-Z]/, "-$&").toLowerCase(); };
-var flagKey = function (str) { return "-" + dasherize(str).replace('_', ''); };
+var flagKey = function (str) { return "-" + dasherize(str); };
 var maybe1or2 = function (a, b) { return b ? [a, b] : [a]; };
 var maybe1 = function (a) { return a ? [a] : undefined; };
