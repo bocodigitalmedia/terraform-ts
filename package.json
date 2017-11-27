@@ -1,16 +1,17 @@
 {
+  "author": "Christian Bradley <christian.bradley@bocodigital.com>",
   "name": "typescript-ts",
   "version": "0.1.0",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
-  "dependencies": {
-    "@types/shelljs": "^0.7.6",
-    "shelljs": "^0.7.8"
+    "build":
+      "rimraf dist doc && tsc && typedoc --theme default --target ES6 --out doc/ src/",
+    "watch": "rimraf dist && tsc -w"
   },
   "devDependencies": {
+    "rimraf": "^2.6.2",
     "tslint": "^5.8.0",
+    "typedoc": "^0.9.0",
+    "typedoc-clarity-theme": "^1.1.0",
     "typescript": "^2.6.1"
   }
 }
