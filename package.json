@@ -1,7 +1,16 @@
 {
-    "author": "Christian Bradley <christian.bradley@bocodigital.com>",
     "name": "typescript-ts",
+    "description": "A Javascript/Typescript wrapper for the Terraform CLI",
     "version": "0.1.0",
+    "author": "Christian Bradley <christian.bradley@bocodigital.com>",
+    "keywords": ["terraform", "typescript", "ts"],
+    "bugs": "https://github.com/bocodigitalmedia/terraform-ts/issues",
+    "homepage": "https://github.com/bocodigitalmedia/terraform-ts",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bocodigitalmedia/terraform-ts.git"
+    },
     "scripts": {
         "build": "rimraf dist doc && tsc && typedoc --theme default --target ES6 --out doc/ src/",
         "watch": "rimraf dist && tsc -w"
