@@ -1,7 +1,7 @@
 {
     "name": "typescript-ts",
     "description": "A Javascript/Typescript wrapper for the Terraform CLI",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "author": "Christian Bradley <christian.bradley@bocodigital.com>",
     "keywords": ["terraform", "typescript", "ts"],
     "bugs": "https://github.com/bocodigitalmedia/terraform-ts/issues",
