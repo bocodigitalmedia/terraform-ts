@@ -1,5 +1,5 @@
 {
-    "name": "typescript-ts",
+    "name": "terraform-ts",
     "description": "A Javascript/Typescript wrapper for the Terraform CLI",
     "version": "0.2.0",
     "author": "Christian Bradley <christian.bradley@bocodigital.com>",
