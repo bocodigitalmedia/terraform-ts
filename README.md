@@ -12,11 +12,12 @@ npm install terraform-js
 
 ## Usage
 
-See the `doc` directory for full API Documentation.
+See the generated [API Docs](https://bocodigitalmedia.github.io/terraform-ts/api) for detailed documentation.
 
 ### Using the Terraform Class
+
 ```ts
-import { Terraform, Parse } from 'terraform-js'
+import { Terraform, Parse } from "terraform-js"
 
 const tf = new Terraform({
     path: "/path/to/terraform",
@@ -28,7 +29,6 @@ tf.workspaceList().then(console.log)
 //   workspace1
 // * workspace2
 //   workspace3
-
 ```
 
 ### Functional Style
