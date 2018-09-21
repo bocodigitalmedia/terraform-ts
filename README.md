@@ -17,7 +17,7 @@ See the generated [API Docs](https://bocodigitalmedia.github.io/terraform-ts/api
 ### Using the Terraform Class
 
 ```ts
-import { Terraform, Parse } from "terraform-js"
+import { Terraform, Parse } from "terraform-ts"
 
 const tf = new Terraform({
     path: "/path/to/terraform",
@@ -34,7 +34,7 @@ tf.workspaceList().then(console.log)
 ### Functional Style
 
 ```ts
-import { exec, map, Config, WorkspaceList, WorkspaceSelect, WorkspaceNew } from 'terraform-js'
+import { exec, map, Config, WorkspaceList, WorkspaceSelect, WorkspaceNew } from 'terraform-ts'
 
 const cfg = Config({ cwd: "/path/to/project" })
 
