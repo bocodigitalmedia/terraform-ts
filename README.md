@@ -1,4 +1,4 @@
-# terraform-js
+# terraform-ts
 
 A Javascript wrapper for terraform CLI.
 
@@ -7,7 +7,7 @@ Supports all commands with the exception of `terraform console`.
 ## Installation
 
 ```
-npm install terraform-js
+npm install terraform-ts
 ```
 
 ## Usage
