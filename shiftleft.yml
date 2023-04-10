@@ -1,0 +1,11 @@
+build_rules:
+  - id: test
+    finding_types:
+      - vuln
+      - secret
+      - insight
+      - extscan
+    cvss_31_severity_ratings:
+      - high
+      - critical
+    threshold: 1
