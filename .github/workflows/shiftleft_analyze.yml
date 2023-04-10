@@ -24,8 +24,10 @@ jobs:
     - name: Analyze
       run: ${GITHUB_WORKSPACE}/sl analyze --wait --app $AppName --tag app.group="Modal Digital" --terraform .
       env:
-        SHIFTLEFT_ACCESS_TOKEN: $Token #${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}        
+        SHIFTLEFT_ACCESS_TOKEN: $Token
+        #SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}         
     - name: Check Analysis with BuildRule
       run: ${GITHUB_WORKSPACE}/sl check-analysis --app $AppName --v2 --config ${GITHUB_WORKSPACE}/shiftleft.yml
       env:        
-        SHIFTLEFT_ACCESS_TOKEN: $Token #${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
+        SHIFTLEFT_ACCESS_TOKEN: $Token
+        #SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}  
