@@ -11,8 +11,6 @@ on:
       - master
 env:
   AppName: bocodigitalmedia_terraform_ts
-  Token : eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGl2NCIsImlhdCI6MTY4MTEzNzU1NiwiaXNzIjoiU2hpZnRMZWZ0Iiwib3JnSUQiOiI4OWI3ODhlZC0zMzAyLTQyOGYtODYwZS04OGNkNmJmNTZkNmEiLCJ0b2tlbklEIjoiOGU1ZGJlY2MtZGZlMC00YjdjLWExODctY2JlYjMxNGZjOWQwIiwic2NvcGVzIjpbImV4dGVuZGVkIl19.nQxXQxsGQR3RO6ZqQfvNB6WTwvHFoqvnC3yOekhDERnEL6a7O5ETea4IileOwD6pbzhGNBiQs56i9hSeAoQeUKfgyQNMjSYhFB7eC27Q9U06vfaJgMJt8c3YcmNZ5QAiFkZi-ghnchXqN3w09rf73XRkg887H56lr-vtzU3NAtns_im7Ns9OxFzyJFY7oS9U71bw0KiB3iusW1v7gBveSsCWHbnWTeBg6r4MvtCUZB9cQ2pvSxejrdiOTHv-tKiHRopN7cT28-e3RcSVK_XaZilnesoNjd68LfAsK169GadzxCO_U24HRl9c2Brw6WwSCSghPoPBull54DFOD20Oqg
-
 jobs:
   NextGen-Static-Analysis:
     runs-on: ubuntu-20.04
@@ -25,9 +23,11 @@ jobs:
       run: ${GITHUB_WORKSPACE}/sl analyze --wait --app $AppName --tag app.group="Modal Digital" --terraform .
       env:
         SHIFTLEFT_ACCESS_TOKEN: eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGl2NCIsImlhdCI6MTY4MTEzNzU1NiwiaXNzIjoiU2hpZnRMZWZ0Iiwib3JnSUQiOiI4OWI3ODhlZC0zMzAyLTQyOGYtODYwZS04OGNkNmJmNTZkNmEiLCJ0b2tlbklEIjoiOGU1ZGJlY2MtZGZlMC00YjdjLWExODctY2JlYjMxNGZjOWQwIiwic2NvcGVzIjpbImV4dGVuZGVkIl19.nQxXQxsGQR3RO6ZqQfvNB6WTwvHFoqvnC3yOekhDERnEL6a7O5ETea4IileOwD6pbzhGNBiQs56i9hSeAoQeUKfgyQNMjSYhFB7eC27Q9U06vfaJgMJt8c3YcmNZ5QAiFkZi-ghnchXqN3w09rf73XRkg887H56lr-vtzU3NAtns_im7Ns9OxFzyJFY7oS9U71bw0KiB3iusW1v7gBveSsCWHbnWTeBg6r4MvtCUZB9cQ2pvSxejrdiOTHv-tKiHRopN7cT28-e3RcSVK_XaZilnesoNjd68LfAsK169GadzxCO_U24HRl9c2Brw6WwSCSghPoPBull54DFOD20Oqg
+        # Remove hardcoded access token from here and add to the secrets
         #SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}         
     - name: Check Analysis with BuildRule
       run: ${GITHUB_WORKSPACE}/sl check-analysis --app $AppName --v2 --config ${GITHUB_WORKSPACE}/shiftleft.yml
       env:        
         SHIFTLEFT_ACCESS_TOKEN: eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhcGl2NCIsImlhdCI6MTY4MTEzNzU1NiwiaXNzIjoiU2hpZnRMZWZ0Iiwib3JnSUQiOiI4OWI3ODhlZC0zMzAyLTQyOGYtODYwZS04OGNkNmJmNTZkNmEiLCJ0b2tlbklEIjoiOGU1ZGJlY2MtZGZlMC00YjdjLWExODctY2JlYjMxNGZjOWQwIiwic2NvcGVzIjpbImV4dGVuZGVkIl19.nQxXQxsGQR3RO6ZqQfvNB6WTwvHFoqvnC3yOekhDERnEL6a7O5ETea4IileOwD6pbzhGNBiQs56i9hSeAoQeUKfgyQNMjSYhFB7eC27Q9U06vfaJgMJt8c3YcmNZ5QAiFkZi-ghnchXqN3w09rf73XRkg887H56lr-vtzU3NAtns_im7Ns9OxFzyJFY7oS9U71bw0KiB3iusW1v7gBveSsCWHbnWTeBg6r4MvtCUZB9cQ2pvSxejrdiOTHv-tKiHRopN7cT28-e3RcSVK_XaZilnesoNjd68LfAsK169GadzxCO_U24HRl9c2Brw6WwSCSghPoPBull54DFOD20Oqg
+        # Remove hardcoded access token from here and add to the secrets
         #SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}  
